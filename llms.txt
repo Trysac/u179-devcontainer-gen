@@ -1,16 +1,15 @@
 # devcontainer-gen
 
-> Generate devcontainer.json for Python, Node and Go projects from marker files, with versions from version files, an overridable image table and golden output Python package `trysac-devcontainer-gen`, import name `devcontainer_gen`, MIT licensed,
+> Generate devcontainer.json for Python, Node and Go projects from marker files, with versions from version files, an overridable image table and golden output Python package `devcontainer-gen`, import name `devcontainer_gen`, MIT licensed,
 > Python >= 3.10, no runtime dependencies.
 
 ## Docs
 
 - [README](README.md): problem, install, usage example
-- [AGENTS](AGENTS.md): commands, folder map, conventions, limits
 - [Architecture](docs/ARCHITECTURE.md): shape of the package and its public API
 - [Testing](docs/TESTING.md): how to run and extend the tests
+- [Security](docs/SECURITY.md): threat model
 
 ## Optional
 
 - [Stack](docs/STACK.md): tools used and discarded
-- [Changelog](CHANGELOG.md): release history
