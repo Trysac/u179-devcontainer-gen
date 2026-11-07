@@ -1,19 +1,16 @@
-# Security notes
+# Security Policy
 
-## Threat model
+## Threat Model
 
-`trysac-devcontainer-gen` is a pure library without I/O. The main risks are:
+`devcontainer_gen` parses marker files from potentially untrusted repositories to produce container configurations.
 
-- **Supply chain**: a compromised dependency or CI action. Mitigation: no runtime dependencies,
-  Dependabot weekly updates, actions pinned to major versions, minimal workflow permissions.
-- **Leaked secrets**: tokens committed by mistake. Mitigation: `gitleaks` runs in the local gates
-  and in CI; `.env` files are git-ignored.
-- **Untrusted input**: callers may pass hostile strings. Mitigation: validate input and fail with
-  explicit exceptions; never `eval`, `exec` or deserialize untrusted data.
+### Defended
 
-## Publishing
+- **Denial of Service**: Marker files exceeding 65,536 bytes are rejected to prevent memory exhaustion.
+- **Injection/Validation**: Container names are strictly validated (1-64 printable characters) and forwarded ports are checked against the valid integer range (1-65535).
+- **Filesystem Integrity**: The CLI writes to temporary files within `.devcontainer` and uses `os.replace` for atomic updates, preventing partial writes.
+- **Supply Chain**: The library is zero-dependency, minimizing the attack surface from third-party code.
 
-Releases are published to PyPI with trusted publishing (OIDC) when available, never with a
-long-lived token stored in the repository.
+### Not Defended
 
-To report a vulnerability, see [SECURITY.md](../SECURITY.md).
+- **Logic Integrity**: Parsing does not validate that the extracted versions or install commands are safe or appropriate for the intended infrastructure; this is left to the user to review.

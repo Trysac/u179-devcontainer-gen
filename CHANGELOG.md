@@ -9,4 +9,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add devcontainer-gen library and CLI for generating devcontainer.json from marker files
 - Initial project structure from the factory utility template.

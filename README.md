@@ -1,48 +1,41 @@
 # devcontainer-gen
 
-[![PyPI version](https://img.shields.io/pypi/v/trysac-devcontainer-gen)](https://pypi.org/project/trysac-devcontainer-gen/)
-[![License: MIT](https://img.shields.io/pypi/l/trysac-devcontainer-gen)](LICENSE)
-[![CI](https://github.com/Trysac/u179-devcontainer-gen/actions/workflows/ci.yml/badge.svg)](https://github.com/Trysac/u179-devcontainer-gen/actions/workflows/ci.yml)
+Deterministic `devcontainer.json` generator for Python, Node, and Go projects. Automatically detects runtime stacks from project marker files and generates valid container configurations.
 
-Generate devcontainer.json for Python, Node and Go projects from marker files, with versions from version files, an overridable image table and golden output
+## Installation
 
-## Problem
-
-Describe in two or three sentences the concrete problem this utility solves, who hits it, and what
-they do today without it. Replace this paragraph when the first real feature lands.
-
-## Install
-
-```sh
-pip install trysac-devcontainer-gen
-# or
-uv add trysac-devcontainer-gen
+```bash
+pip install devcontainer-gen
 ```
 
-Requires Python 3.10 or newer. No runtime dependencies.
-
-## Usage
+## Usage Example
 
 ```python
-import devcontainer_gen
+from devcontainer_gen import detect_stacks, generate, render
 
-# normalize() trims surrounding whitespace and lower-cases the text.
-print(devcontainer_gen.normalize("  Hello World "))  # -> "hello world"
-
-# Blank input is rejected explicitly instead of returning an empty string.
-try:
-    devcontainer_gen.normalize("   ")
-except ValueError as exc:
-    print(f"rejected: {exc}")
+files = {"pyproject.toml": "[project]\nname = 'demo'\n", ".python-version": "3.12.4"}
+detection = detect_stacks(files)
+# Generate configuration, default stack uses Python image
+config = generate(detection.stacks, forward_ports=[8000])
+print(render(config))
 ```
 
-## Documentation
+## Public API Summary
 
-- [Architecture](docs/ARCHITECTURE.md) and [decisions](docs/decisions/)
-- [Testing](docs/TESTING.md) and [security](docs/SECURITY.md)
-- [Project record](docs/PROJECT.md) and [stack](docs/STACK.md)
-- [Changelog](CHANGELOG.md) and [contributing guide](CONTRIBUTING.md)
+- **Functions**:
+  - `detect_stacks(files: Mapping[str, str]) -> Detection`: Analyzes file content to identify stacks.
+  - `generate(stacks: Sequence[Stack], *, name: str = 'dev', forward_ports: Sequence[int] = (), table: Mapping[str, ImageSpec] = DEFAULT_TABLE) -> dict`: Creates configuration dictionary.
+  - `render(config: dict) -> str`: Produces formatted JSON string.
+- **Errors**: `DevcontainerError` with codes: `no_stack`, `file_too_large`, `invalid_option`, `exists`.
+- **Limits**:
+  - Input files: Max 65,536 bytes.
+  - Container name: 1-64 printable characters.
+  - Ports: 1-65535.
 
-## License
+## Why not existing CLI templates?
 
-[MIT](LICENSE) (c) 2026 Miguel Gomez
+Existing Dev Container CLI templates are interactive and manual. `devcontainer-gen` is a deterministic, programmatic library, ideal for automation, scaffolders, and headless CI integration.
+
+## Security
+
+See [docs/SECURITY.md](docs/SECURITY.md) for the threat model and mitigations.
