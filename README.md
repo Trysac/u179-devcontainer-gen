@@ -4,8 +4,10 @@ Deterministic `devcontainer.json` generator for Python, Node, and Go projects. A
 
 ## Installation
 
+Not published to PyPI yet. Install it from GitHub:
+
 ```bash
-pip install devcontainer-gen
+pip install "git+https://github.com/Trysac/u179-devcontainer-gen"
 ```
 
 ## Usage Example
